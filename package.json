@@ -1,0 +1,22 @@
+{
+  "name": "fold-unfold-smartly",
+  "displayName": "Fold Unfold Upward (Smart fold)",
+  "description": "Fold and Unfold a specific indentation more smartly",
+  "version": "0.0.1",
+  "type": "module",
+  "engines": {
+    "vscode": "^1.92.0"
+  },
+  "categories": [
+    "Extension Packs"
+  ],
+  "extensionPack": [
+    "publisher.extensionName"
+  ],
+  "dependencies": {
+    "vscode": "^1.1.37"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.92.0"
+  }
+}
