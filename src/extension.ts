@@ -38,7 +38,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       // 같은 indentation의 마지막 줄 찾기
-      const currentIndentation = text.match(/^\s*/)[0]; // 현재 줄의 indentation
+      const currentIndentation = text.match(/^\s*/)?.[0]!; // 현재 줄의 indentation
       let lastLine = line;
 
       // 아래로 내려가면서 같은 indentation을 가진 마지막 줄 찾기
