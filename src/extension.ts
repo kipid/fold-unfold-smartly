@@ -1,9 +1,16 @@
 import * as vscode from "vscode";
 
 export function activate(context: vscode.ExtensionContext) {
-  const decorationType = vscode.window.createTextEditorDecorationType({
+  const upwardDecorationType = vscode.window.createTextEditorDecorationType({
     before: {
       contentText: "⇑",
+      margin: "0 0 0 .6em",
+    },
+  });
+
+  const downwardDecorationType = vscode.window.createTextEditorDecorationType({
+    before: {
+      contentText: "▼",
       margin: "0 0 0 .6em",
     },
   });
@@ -12,11 +19,13 @@ export function activate(context: vscode.ExtensionContext) {
     if (editor) {
       const text = editor.document.getText();
       const lines = text.split("\n");
-      const decorations: vscode.DecorationOptions[] = [];
+      const upwardDecorations: vscode.DecorationOptions[] = [];
+      const downwardDecorations: vscode.DecorationOptions[] = [];
 
       for (let i = 0; i < lines.length; i++) {
         const currentIndentation = lines[i].match(/^\s*/)?.[0] || "";
-        // 현재 줄의 indentation이 다음 줄과 같고, 다음 줄이 존재할 경우
+
+        // 아래쪽 방향 caret 표시
         if (
           i < lines.length - 1 &&
           lines[i + 1].startsWith(currentIndentation)
@@ -26,12 +35,28 @@ export function activate(context: vscode.ExtensionContext) {
             lines[i].length,
             i,
             lines[i].length
-          ); // 줄의 끝에 decoration을 추가
-          decorations.push({ range });
+          );
+          downwardDecorations.push({ range });
+        }
+
+        // 위쪽 방향 caret 표시
+        if (
+          i > 0 &&
+          lines[i].startsWith(currentIndentation) &&
+          !lines[i - 1].startsWith(currentIndentation)
+        ) {
+          const range = new vscode.Range(
+            i,
+            lines[i].length,
+            i,
+            lines[i].length
+          );
+          upwardDecorations.push({ range });
         }
       }
 
-      editor.setDecorations(decorationType, decorations);
+      editor.setDecorations(downwardDecorationType, downwardDecorations);
+      editor.setDecorations(upwardDecorationType, upwardDecorations);
     }
   });
 
@@ -70,13 +95,13 @@ export function activate(context: vscode.ExtensionContext) {
             new vscode.Range(i, 0, i, editor.document.lineAt(i).text.length)
           );
         }
-        editor.setDecorations(decorationType, []); // fold 처리
         // 여기에 fold 처리 로직을 추가할 수 있습니다.
       }
     });
   });
 
-  context.subscriptions.push(decorationType);
+  context.subscriptions.push(upwardDecorationType);
+  context.subscriptions.push(downwardDecorationType);
 }
 
 export function deactivate() {}
