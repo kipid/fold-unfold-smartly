@@ -22,14 +22,24 @@ function findFoldableRange(
   lines: string[],
   startLineIndex: number
 ): { start: number; end: number } | null {
+  console.log(
+    `[SmartFold DBG] findFoldableRange called for line: ${startLineIndex + 1}`
+  ); // Debug log
   if (startLineIndex >= lines.length - 1) {
+    console.log(`[SmartFold DBG] Early return: startLineIndex too large.`); // Debug log
     return null;
   }
 
   const startLine = lines[startLineIndex];
-  const startIndentationMatch = startLine.match(/^\\s*/);
-  if (!startIndentationMatch) return null; // Should not happen with split
+  const startIndentationMatch = startLine.match(/^\s*/);
+  if (!startIndentationMatch) {
+    console.log(`[SmartFold DBG] Early return: No start indentation match.`); // Debug log
+    return null;
+  }
   const startIndentation = startIndentationMatch[0];
+  console.log(
+    `[SmartFold DBG] Start Indentation: '${startIndentation}' (length ${startIndentation.length})`
+  ); // Debug log
 
   let endLineIndex = -1;
   let k = startLineIndex + 1;
@@ -37,41 +47,63 @@ function findFoldableRange(
 
   while (k < lines.length) {
     const currentLine = lines[k];
-    const currentIndentationMatch = currentLine.match(/^\\s*/);
+    const currentIndentationMatch = currentLine.match(/^\s*/);
     if (!currentIndentationMatch) break; // Should not happen
     const currentIndentation = currentIndentationMatch[0];
+    console.log(
+      `[SmartFold DBG] Checking line ${
+        k + 1
+      }: Indent '${currentIndentation}' (length ${
+        currentIndentation.length
+      }), Content: '${currentLine.trim()}'`
+    ); // Debug log
 
     // Check if it's a child or sibling with content
     if (
       currentIndentation.length > startIndentation.length &&
-      !/^\\s*$/.test(currentLine)
+      !/^\s*$/.test(currentLine)
     ) {
+      console.log(`[SmartFold DBG]   Found child.`); // Debug log
       foundChild = true;
-      endLineIndex = k; // Keep track of the last potential line in the fold
+      endLineIndex = k;
       k++;
     } else if (
       currentIndentation.length <= startIndentation.length &&
-      !/^\\s*$/.test(currentLine)
+      !/^\s*$/.test(currentLine)
     ) {
-      // Found a line with less or equal indentation and content, stop
+      console.log(
+        `[SmartFold DBG]   Found sibling/parent with content. Breaking.`
+      ); // Debug log
       break;
-    } else if (/^\\s*$/.test(currentLine) && foundChild) {
-      // Found a blank line after finding children, potentially part of the block
+    } else if (/^\s*$/.test(currentLine) && foundChild) {
+      console.log(`[SmartFold DBG]   Found blank line after child.`); // Debug log
       endLineIndex = k;
       k++;
-    } else if (/^\\s*$/.test(currentLine) && !foundChild) {
-      // Blank line before any children, stop
+    } else if (/^\s*$/.test(currentLine) && !foundChild) {
+      console.log(`[SmartFold DBG]   Found blank line before child. Breaking.`); // Debug log
       break;
     } else {
-      // Equal indentation or less before finding children, stop
+      console.log(
+        `[SmartFold DBG]   Equal/less indentation before child. Breaking.`
+      ); // Debug log
       break;
     }
   }
 
   if (foundChild && endLineIndex !== -1) {
+    console.log(
+      `[SmartFold DBG] Found range: ${startLineIndex + 1} to ${
+        endLineIndex + 1
+      }`
+    ); // Debug log
     return { start: startLineIndex, end: endLineIndex };
   }
 
+  console.log(
+    `[SmartFold DBG] No foldable range found starting at line ${
+      startLineIndex + 1
+    }`
+  ); // Debug log
   return null;
 }
 
@@ -147,19 +179,25 @@ function updateDecorations(editor: vscode.TextEditor | undefined) {
 
     if (rangeInfo) {
       const { start, end } = rangeInfo;
-      // console.log(`[SmartFold] Found foldable range: ${start + 1}-${end + 1}`); // More detailed log
+      console.log(
+        `[SmartFold] Found foldable range for line ${i + 1}: ${start + 1}-${
+          end + 1
+        }`
+      ); // Log was already uncommented
 
       // --- Determine Folded State ---
       // Check if the line *immediately after* the start is visible.
-      // This is a heuristic, not perfect for all folding scenarios.
       let isRangeActuallyFolded = false;
       if (start + 1 <= end) {
-        // Make sure there's a line to check
         isRangeActuallyFolded = !editor.visibleRanges.some(
           (vr) => vr.start.line <= start + 1 && vr.end.line >= start + 1
         );
       }
-      // console.log(`[SmartFold] Line: ${start + 1}, Is Range Folded? ${isRangeActuallyFolded}`);
+      console.log(
+        `[SmartFold] Line: ${
+          start + 1
+        }, Is Range Folded? ${isRangeActuallyFolded}`
+      ); // Log was already uncommented
 
       // --- Apply Decorations ---
       const startLineRange = new vscode.Range(start, 0, start, 0);
@@ -168,23 +206,32 @@ function updateDecorations(editor: vscode.TextEditor | undefined) {
 
       if (isRangeActuallyFolded) {
         // Folded state
-        // console.log(`[SmartFold] Applying Folded icons for ${start + 1}-${end + 1}`);
+        console.log(
+          `[SmartFold] Applying Folded icons for ${start + 1}-${end + 1}`
+        ); // Log was already uncommented
         decorations.downFolded.push({ range: startLineRange });
         if (!isEndLineItselfHidden) {
           decorations.upFolded.push({ range: endLineRange });
         }
       } else {
         // Available state (not folded)
-        // console.log(`[SmartFold] Applying Available icons for ${start + 1}-${end + 1}`);
+        console.log(
+          `[SmartFold] Applying Available icons for ${start + 1}-${end + 1}`
+        ); // Log was already uncommented
         decorations.downAvailable.push({ range: startLineRange });
         if (!isEndLineItselfHidden) {
           decorations.upAvailable.push({ range: endLineRange });
         }
       }
+    } else {
+      console.log(`[SmartFold DBG] No rangeInfo for line ${i + 1}`); // Debug log
     }
   }
 
   // Apply decorations
+  console.log(
+    `[SmartFold] Applying decorations: downAvailable=${decorations.downAvailable.length}, upAvailable=${decorations.upAvailable.length}, downFolded=${decorations.downFolded.length}, upFolded=${decorations.upFolded.length}`
+  ); // Log was already uncommented
   editor.setDecorations(foldDownAvailableDecoration, decorations.downAvailable);
   editor.setDecorations(foldUpAvailableDecoration, decorations.upAvailable);
   editor.setDecorations(foldDownFoldedDecoration, decorations.downFolded);
