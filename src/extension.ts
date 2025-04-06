@@ -3,17 +3,33 @@ import * as vscode from "vscode";
 export function activate(context: vscode.ExtensionContext) {
   const upwardDecorationType = vscode.window.createTextEditorDecorationType({
     before: {
-      contentText: "⇑",
+      contentText: "≻",
       margin: "0 0 0 .6em",
     },
   });
 
   const downwardDecorationType = vscode.window.createTextEditorDecorationType({
     before: {
-      contentText: "▼",
+      contentText: "≺",
       margin: "0 0 0 .6em",
     },
   });
+
+  const upwardAvailableDecorationType =
+    vscode.window.createTextEditorDecorationType({
+      before: {
+        contentText: "∨",
+        margin: "0 0 0 .6em",
+      },
+    });
+
+  const downwardAvailableDecorationType =
+    vscode.window.createTextEditorDecorationType({
+      before: {
+        contentText: "∧",
+        margin: "0 0 0 .6em",
+      },
+    });
 
   vscode.window.onDidChangeActiveTextEditor((editor) => {
     if (editor) {
@@ -21,6 +37,8 @@ export function activate(context: vscode.ExtensionContext) {
       const lines = text.split("\n");
       const upwardDecorations: vscode.DecorationOptions[] = [];
       const downwardDecorations: vscode.DecorationOptions[] = [];
+      const upwardAvailableDecorations: vscode.DecorationOptions[] = [];
+      const downwardAvailableDecorations: vscode.DecorationOptions[] = [];
 
       for (let i = 0; i < lines.length; i++) {
         const currentIndentation = lines[i].match(/^\s*/)?.[0] || "";
@@ -53,10 +71,47 @@ export function activate(context: vscode.ExtensionContext) {
           );
           upwardDecorations.push({ range });
         }
+
+        // 위쪽에서 fold 될 수 있는 상태 표시
+        if (
+          i > 0 &&
+          lines[i].startsWith(currentIndentation) &&
+          lines[i - 1].startsWith(currentIndentation)
+        ) {
+          const range = new vscode.Range(
+            i,
+            lines[i].length,
+            i,
+            lines[i].length
+          );
+          upwardAvailableDecorations.push({ range });
+        }
+
+        // 아래쪽에서 fold 될 수 있는 상태 표시
+        if (
+          i < lines.length - 1 &&
+          lines[i + 1].startsWith(currentIndentation)
+        ) {
+          const range = new vscode.Range(
+            i,
+            lines[i].length,
+            i,
+            lines[i].length
+          );
+          downwardAvailableDecorations.push({ range });
+        }
       }
 
       editor.setDecorations(downwardDecorationType, downwardDecorations);
       editor.setDecorations(upwardDecorationType, upwardDecorations);
+      editor.setDecorations(
+        upwardAvailableDecorationType,
+        upwardAvailableDecorations
+      );
+      editor.setDecorations(
+        downwardAvailableDecorationType,
+        downwardAvailableDecorations
+      );
     }
   });
 
@@ -95,13 +150,57 @@ export function activate(context: vscode.ExtensionContext) {
             new vscode.Range(i, 0, i, editor.document.lineAt(i).text.length)
           );
         }
-        // 여기에 fold 처리 로직을 추가할 수 있습니다.
+
+        // Fold 처리 로직
+        editor.setDecorations(downwardDecorationType, []);
+        editor.setDecorations(upwardDecorationType, []);
+        editor.setDecorations(upwardAvailableDecorationType, []);
+        editor.setDecorations(downwardAvailableDecorationType, []);
+
+        // 스크롤 조정
+        editor.revealRange(
+          new vscode.Range(firstLine, 0, firstLine, 0),
+          vscode.TextEditorRevealType.InCenter
+        );
       }
     });
   });
 
+  // 마우스 오버 이벤트를 통해 기호 표시
+  context.subscriptions.push(
+    vscode.languages.registerHoverProvider("*", {
+      provideHover(document, position) {
+        const line = position.line;
+        const text = document.lineAt(line).text;
+
+        // 현재 줄의 indentation 확인
+        const currentIndentation = text.match(/^\s*/)?.[0]!;
+
+        // 아래쪽에서 fold 될 수 있는 상태일 때
+        if (
+          line < document.lineCount - 1 &&
+          document.lineAt(line + 1).text.startsWith(currentIndentation)
+        ) {
+          return new vscode.Hover("∧"); // 아래쪽 fold 기호
+        }
+
+        // 위쪽에서 fold 될 수 있는 상태일 때
+        if (
+          line > 0 &&
+          document.lineAt(line - 1).text.startsWith(currentIndentation)
+        ) {
+          return new vscode.Hover("∨"); // 위쪽 fold 기호
+        }
+
+        return null; // 기호를 표시하지 않음
+      },
+    })
+  );
+
   context.subscriptions.push(upwardDecorationType);
   context.subscriptions.push(downwardDecorationType);
+  context.subscriptions.push(upwardAvailableDecorationType);
+  context.subscriptions.push(downwardAvailableDecorationType);
 }
 
 export function deactivate() {}
