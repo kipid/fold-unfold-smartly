@@ -15,8 +15,20 @@ export function activate(context: vscode.ExtensionContext) {
       const decorations: vscode.DecorationOptions[] = [];
 
       for (let i = 0; i < lines.length; i++) {
-        const range = new vscode.Range(i, lines[i].length, i, lines[i].length);
-        decorations.push({ range });
+        const currentIndentation = lines[i].match(/^\s*/)?.[0] || "";
+        // 현재 줄의 indentation이 다음 줄과 같고, 다음 줄이 존재할 경우
+        if (
+          i < lines.length - 1 &&
+          lines[i + 1].startsWith(currentIndentation)
+        ) {
+          const range = new vscode.Range(
+            i,
+            lines[i].length,
+            i,
+            lines[i].length
+          ); // 줄의 끝에 decoration을 추가
+          decorations.push({ range });
+        }
       }
 
       editor.setDecorations(decorationType, decorations);
@@ -31,33 +43,8 @@ export function activate(context: vscode.ExtensionContext) {
       const line = selection.active.line;
       const text = editor.document.lineAt(line).text;
 
-      if (text.endsWith("^")) {
-        vscode.window.showInformationMessage(
-          `Caret clicked on line ${line + 1}`
-        );
-      }
-
-      // 같은 indentation의 마지막 줄 찾기
-      const currentIndentation = text.match(/^\s*/)?.[0]!; // 현재 줄의 indentation
-      let lastLine = line;
-
-      // 아래로 내려가면서 같은 indentation을 가진 마지막 줄 찾기
-      while (lastLine + 1 < editor.document.lineCount) {
-        const nextLineText = editor.document.lineAt(lastLine + 1).text;
-        if (nextLineText.startsWith(currentIndentation)) {
-          lastLine++;
-        } else {
-          break;
-        }
-      }
-
-      // 마지막 줄에서 fold 처리
-      if (lastLine > line) {
-        vscode.window.showInformationMessage(
-          `Folding lines from ${line + 1} to ${lastLine + 1}`
-        );
-        // 여기에 fold 처리 로직 추가
-      }
+      // 클릭된 줄의 indentation 확인
+      const currentIndentation = text.match(/^\s*/)?.[0]!;
 
       // 위쪽으로 fold 처리
       let firstLine = line;
@@ -75,7 +62,16 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.showInformationMessage(
           `Folding lines from ${firstLine + 1} to ${line + 1}`
         );
-        // 여기에 위쪽 fold 처리 로직 추가
+
+        // 실제 fold 처리 로직 추가
+        const rangesToFold: vscode.Range[] = [];
+        for (let i = firstLine; i <= line; i++) {
+          rangesToFold.push(
+            new vscode.Range(i, 0, i, editor.document.lineAt(i).text.length)
+          );
+        }
+        editor.setDecorations(decorationType, []); // fold 처리
+        // 여기에 fold 처리 로직을 추가할 수 있습니다.
       }
     });
   });
