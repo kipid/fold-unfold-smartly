@@ -3,25 +3,25 @@ export function activate(context) {
     const upwardDecorationType = vscode.window.createTextEditorDecorationType({
         before: {
             contentText: "≻",
-            margin: "0 0 0 .6em",
+            margin: "0 0 0 0",
         },
     });
     const downwardDecorationType = vscode.window.createTextEditorDecorationType({
         before: {
             contentText: "≺",
-            margin: "0 0 0 .6em",
+            margin: "0 0 0 0",
         },
     });
     const upwardAvailableDecorationType = vscode.window.createTextEditorDecorationType({
         before: {
             contentText: "∨",
-            margin: "0 0 0 .6em",
+            margin: "0 0 0 0",
         },
     });
     const downwardAvailableDecorationType = vscode.window.createTextEditorDecorationType({
         before: {
             contentText: "∧",
-            margin: "0 0 0 .6em",
+            margin: "0 0 0 0",
         },
     });
     vscode.window.onDidChangeActiveTextEditor((editor) => {
