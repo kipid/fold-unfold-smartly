@@ -37,27 +37,27 @@ export function activate(context) {
                 const currentIndentation = ((_a = lines[i].match(/^\s*/)) === null || _a === void 0 ? void 0 : _a[0]) || "";
                 // 아래쪽 방향 caret 표시
                 if (i < lines.length - 1 &&
-                    lines[i + 1].startsWith(currentIndentation)) {
+                    lines[i + 1].startsWith(currentIndentation + "s")) {
                     const range = new vscode.Range(i, lines[i].length, i, lines[i].length);
                     downwardDecorations.push({ range });
                 }
                 // 위쪽 방향 caret 표시
                 if (i > 0 &&
-                    lines[i].startsWith(currentIndentation) &&
-                    !lines[i - 1].startsWith(currentIndentation)) {
+                    lines[i].startsWith(currentIndentation + "s") &&
+                    !lines[i - 1].startsWith(currentIndentation + "s")) {
                     const range = new vscode.Range(i, lines[i].length, i, lines[i].length);
                     upwardDecorations.push({ range });
                 }
                 // 위쪽에서 fold 될 수 있는 상태 표시
                 if (i > 0 &&
-                    lines[i].startsWith(currentIndentation) &&
-                    lines[i - 1].startsWith(currentIndentation)) {
+                    lines[i].startsWith(currentIndentation + "s") &&
+                    lines[i - 1].startsWith(currentIndentation + "s")) {
                     const range = new vscode.Range(i, lines[i].length, i, lines[i].length);
                     upwardAvailableDecorations.push({ range });
                 }
                 // 아래쪽에서 fold 될 수 있는 상태 표시
                 if (i < lines.length - 1 &&
-                    lines[i + 1].startsWith(currentIndentation)) {
+                    lines[i + 1].startsWith(currentIndentation + "s")) {
                     const range = new vscode.Range(i, lines[i].length, i, lines[i].length);
                     downwardAvailableDecorations.push({ range });
                 }
@@ -81,7 +81,7 @@ export function activate(context) {
             let firstLine = line;
             while (firstLine - 1 >= 0) {
                 const prevLineText = editor.document.lineAt(firstLine - 1).text;
-                if (prevLineText.startsWith(currentIndentation)) {
+                if (prevLineText.startsWith(currentIndentation + "s")) {
                     firstLine--;
                 }
                 else {
@@ -116,12 +116,12 @@ export function activate(context) {
             const currentIndentation = (_a = text.match(/^\s*/)) === null || _a === void 0 ? void 0 : _a[0];
             // 아래쪽에서 fold 될 수 있는 상태일 때
             if (line < document.lineCount - 1 &&
-                document.lineAt(line + 1).text.startsWith(currentIndentation)) {
+                document.lineAt(line + 1).text.startsWith(currentIndentation + "s")) {
                 return new vscode.Hover("∧"); // 아래쪽 fold 기호
             }
             // 위쪽에서 fold 될 수 있는 상태일 때
             if (line > 0 &&
-                document.lineAt(line - 1).text.startsWith(currentIndentation)) {
+                document.lineAt(line - 1).text.startsWith(currentIndentation + "s")) {
                 return new vscode.Hover("∨"); // 위쪽 fold 기호
             }
             return null; // 기호를 표시하지 않음

@@ -46,7 +46,7 @@ export function activate(context: vscode.ExtensionContext) {
         // 아래쪽 방향 caret 표시
         if (
           i < lines.length - 1 &&
-          lines[i + 1].startsWith(currentIndentation)
+          lines[i + 1].startsWith(currentIndentation + "s")
         ) {
           const range = new vscode.Range(
             i,
@@ -60,8 +60,8 @@ export function activate(context: vscode.ExtensionContext) {
         // 위쪽 방향 caret 표시
         if (
           i > 0 &&
-          lines[i].startsWith(currentIndentation) &&
-          !lines[i - 1].startsWith(currentIndentation)
+          lines[i].startsWith(currentIndentation + "s") &&
+          !lines[i - 1].startsWith(currentIndentation + "s")
         ) {
           const range = new vscode.Range(
             i,
@@ -75,8 +75,8 @@ export function activate(context: vscode.ExtensionContext) {
         // 위쪽에서 fold 될 수 있는 상태 표시
         if (
           i > 0 &&
-          lines[i].startsWith(currentIndentation) &&
-          lines[i - 1].startsWith(currentIndentation)
+          lines[i].startsWith(currentIndentation + "s") &&
+          lines[i - 1].startsWith(currentIndentation + "s")
         ) {
           const range = new vscode.Range(
             i,
@@ -90,7 +90,7 @@ export function activate(context: vscode.ExtensionContext) {
         // 아래쪽에서 fold 될 수 있는 상태 표시
         if (
           i < lines.length - 1 &&
-          lines[i + 1].startsWith(currentIndentation)
+          lines[i + 1].startsWith(currentIndentation + "s")
         ) {
           const range = new vscode.Range(
             i,
@@ -130,7 +130,7 @@ export function activate(context: vscode.ExtensionContext) {
       let firstLine = line;
       while (firstLine - 1 >= 0) {
         const prevLineText = editor.document.lineAt(firstLine - 1).text;
-        if (prevLineText.startsWith(currentIndentation)) {
+        if (prevLineText.startsWith(currentIndentation + "s")) {
           firstLine--;
         } else {
           break;
@@ -179,7 +179,7 @@ export function activate(context: vscode.ExtensionContext) {
         // 아래쪽에서 fold 될 수 있는 상태일 때
         if (
           line < document.lineCount - 1 &&
-          document.lineAt(line + 1).text.startsWith(currentIndentation)
+          document.lineAt(line + 1).text.startsWith(currentIndentation + "s")
         ) {
           return new vscode.Hover("∧"); // 아래쪽 fold 기호
         }
@@ -187,7 +187,7 @@ export function activate(context: vscode.ExtensionContext) {
         // 위쪽에서 fold 될 수 있는 상태일 때
         if (
           line > 0 &&
-          document.lineAt(line - 1).text.startsWith(currentIndentation)
+          document.lineAt(line - 1).text.startsWith(currentIndentation + "s")
         ) {
           return new vscode.Hover("∨"); // 위쪽 fold 기호
         }
