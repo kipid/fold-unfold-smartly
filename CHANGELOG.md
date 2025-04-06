@@ -3,4 +3,4 @@
 ## [Unreleased]
 
 - Initial release.
-- Testing stage.
+- Testing stage. 0.0.9
