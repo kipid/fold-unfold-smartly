@@ -4,14 +4,14 @@ export function activate(context: vscode.ExtensionContext) {
   const upwardDecorationType = vscode.window.createTextEditorDecorationType({
     before: {
       contentText: "≻",
-      margin: "0 0 0 0",
+      margin: "0 0 0 -1em",
     },
   });
 
   const downwardDecorationType = vscode.window.createTextEditorDecorationType({
     before: {
       contentText: "≺",
-      margin: "0 0 0 0",
+      margin: "0 0 0 -1em",
     },
   });
 
@@ -19,7 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.createTextEditorDecorationType({
       before: {
         contentText: "∨",
-        margin: "0 0 0 0",
+        margin: "0 0 0 -1em",
       },
     });
 
@@ -27,7 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.createTextEditorDecorationType({
       before: {
         contentText: "∧",
-        margin: "0 0 0 0",
+        margin: "0 0 0 -1em",
       },
     });
 
