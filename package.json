@@ -2,7 +2,7 @@
   "name": "upward-fold-smartly",
   "displayName": "Upward fold additionally (Smart fold)",
   "description": "Fold and Unfold a specific indentation more smartly. From the downside of the indentation, fold and unfold.",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "publisher": "kipacti",
   "repository": {
     "type": "git",
