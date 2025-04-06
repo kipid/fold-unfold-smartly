@@ -62,8 +62,14 @@ export function activate(context: vscode.ExtensionContext) {
   const iconPath = context.asAbsolutePath(path.join("resources", "icon.svg"));
 
   const decorationType = vscode.window.createTextEditorDecorationType({
-    gutterIconPath: iconPath,
-    gutterIconSize: "20px",
+    // gutterIconPath: iconPath,
+    // gutterIconSize: "1em",
+    before: {
+      contentIconPath: iconPath,
+      width: "1em",
+      height: "1em",
+      margin: "0 0 0 -1em",
+    },
   });
 
   const editor = vscode.window.activeTextEditor;
@@ -76,16 +82,6 @@ export function activate(context: vscode.ExtensionContext) {
       }
     }
     editor.setDecorations(decorationType, decorations);
-
-    vscode.window.onDidChangeTextEditorSelection((e) => {
-      const lineIndex = e.selections[0].active.line;
-      if (decorations.some((dec) => dec.range.start.line === lineIndex)) {
-        vscode.commands.executeCommand(
-          "fold-unfold-smartly.foldUpward",
-          lineIndex
-        );
-      }
-    });
   }
 
   context.subscriptions.push(
@@ -109,7 +105,7 @@ export function activate(context: vscode.ExtensionContext) {
           });
 
           const newStartPosition = new vscode.Position(
-            startLine + range.start - range.end,
+            startLine + range.start - range.end + 2,
             0
           );
           editor.revealRange(

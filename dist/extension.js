@@ -82,8 +82,14 @@ function findCurrentToInitialIndentFoldRange(document, startLineIndex) {
 function activate(context) {
     const iconPath = context.asAbsolutePath(path.join("resources", "icon.svg"));
     const decorationType = vscode.window.createTextEditorDecorationType({
-        gutterIconPath: iconPath,
-        gutterIconSize: "20px",
+        // gutterIconPath: iconPath,
+        // gutterIconSize: "1em",
+        before: {
+            contentIconPath: iconPath,
+            width: "1em",
+            height: "1em",
+            margin: "0 0 0 -1em",
+        },
     });
     const editor = vscode.window.activeTextEditor;
     if (editor) {
@@ -95,12 +101,6 @@ function activate(context) {
             }
         }
         editor.setDecorations(decorationType, decorations);
-        vscode.window.onDidChangeTextEditorSelection((e) => {
-            const lineIndex = e.selections[0].active.line;
-            if (decorations.some((dec) => dec.range.start.line === lineIndex)) {
-                vscode.commands.executeCommand("fold-unfold-smartly.foldUpward", lineIndex);
-            }
-        });
     }
     context.subscriptions.push(vscode.commands.registerCommand("fold-unfold-smartly.foldUpward", (lineIndex) => {
         const editor = vscode.window.activeTextEditor;
@@ -114,7 +114,7 @@ function activate(context) {
             vscode.commands.executeCommand("editor.fold", {
                 selectionLines: [range.start + 1],
             });
-            const newStartPosition = new vscode.Position(startLine + range.start - range.end, 0);
+            const newStartPosition = new vscode.Position(startLine + range.start - range.end + 2, 0);
             editor.revealRange(new vscode.Range(newStartPosition, newStartPosition), vscode.TextEditorRevealType.AtTop);
         }
     }));
