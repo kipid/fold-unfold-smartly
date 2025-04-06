@@ -29,24 +29,25 @@ export function activate(context) {
         },
     });
     const foldRange = function (lines, i, currentIndentation) {
-        if (!new RegExp(`^${currentIndentation}[\\s\\t]`).test(lines[i + 1])) {
-            return null;
-        }
-        let k;
-        for (k = i + 2; k < lines.length; k++) {
-            if (!new RegExp(`^${currentIndentation}[\\s\\t]`).test(lines[k])) {
-                break;
+        if (i < lines.length - 2 &&
+            new RegExp(`^${currentIndentation}[\\s\\t]`).test(lines[i + 1])) {
+            let k;
+            for (k = i + 1; k < lines.length; k++) {
+                if (!new RegExp(`^${currentIndentation}[\\s\\t]`).test(lines[k])) {
+                    break;
+                }
             }
+            const initialRange = new vscode.Range(i, 0, i, lines[i].length);
+            if (k === lines.length) {
+                k--;
+            }
+            const lastRange = new vscode.Range(k - 1, 0, k - 1, lines[k - 1].length);
+            return {
+                initialRange: { range: initialRange, initialLine: i, lastLine: k - 1 },
+                lastRange: { range: lastRange, initialLine: i, lastLine: k - 1 },
+            };
         }
-        const initialRange = new vscode.Range(i, 0, i, lines[i].length);
-        if (k === lines.length) {
-            k--;
-        }
-        const lastRange = new vscode.Range(k, 0, k, lines[k].length);
-        return {
-            initialRange: { range: initialRange, initialLine: i, lastLine: k },
-            lastRange: { range: lastRange, initialLine: i, lastLine: k },
-        };
+        return null;
     };
     // 활성화된 텍스트 에디터가 변경될 때마다 호출되는 이벤트 리스너
     vscode.window.onDidChangeActiveTextEditor((editor) => {
