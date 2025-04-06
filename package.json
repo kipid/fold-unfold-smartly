@@ -1,8 +1,8 @@
 {
-  "name": "upward-fold-smartly",
-  "displayName": "Upward fold additionally (Smart fold)",
+  "name": "fold-unfold-smartly",
+  "displayName": "Upward fold additionally (Smart fold/unfold)",
   "description": "Fold and Unfold a specific indentation more smartly. From the downside of the indentation, fold and unfold.",
-  "version": "0.2.11",
+  "version": "0.5.4",
   "publisher": "kipacti",
   "repository": {
     "type": "git",
@@ -14,28 +14,37 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "onCommand:fold-unfold-smartly.fold",
-    "onCommand:fold-unfold-smartly.unfold"
-  ],
+  "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "fold-unfold-smartly.fold",
-        "title": "Smart Fold"
-      },
-      {
-        "command": "fold-unfold-smartly.unfold",
-        "title": "Smart Unfold"
+        "command": "fold-unfold-smartly.foldUpward",
+        "title": "Smart Fold Upward"
       }
-    ]
+    ],
+    "keybindings": [
+      {
+        "command": "fold-unfold-smartly.foldUpward",
+        "key": "ctrl+alt+f",
+        "when": "editorTextFocus"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "fold-unfold-smartly.foldUpward",
+          "group": "0_folding"
+        }
+      ]
+    }
   },
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
+    "@types/node": "^22.14.0",
     "@types/vscode": "^1.92.0",
     "typescript": "^5.8.3",
     "vscode": "^1.1.37"
