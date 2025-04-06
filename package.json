@@ -2,26 +2,35 @@
   "name": "upward-fold-smartly",
   "displayName": "Upward fold additionally (Smart fold)",
   "description": "Fold and Unfold a specific indentation more smartly. From the downside of the indentation, fold and unfold.",
-  "version": "0.0.14",
+  "version": "0.2.6",
   "publisher": "kipacti",
   "repository": {
     "type": "git",
     "url": "https://github.com/kipid/fold-unfold-smartly"
   },
-  "type": "module",
   "engines": {
     "vscode": "^1.92.0"
   },
   "categories": [
-    "Extension Packs"
-  ],
-  "extensionPack": [
-    "publisher.extensionName"
+    "Other"
   ],
   "activationEvents": [
-    "onCommand:upward-fold-smartly.foldUpward"
+    "onCommand:fold-unfold-smartly.fold",
+    "onCommand:fold-unfold-smartly.unfold"
   ],
   "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "fold-unfold-smartly.fold",
+        "title": "Smart Fold"
+      },
+      {
+        "command": "fold-unfold-smartly.unfold",
+        "title": "Smart Unfold"
+      }
+    ]
+  },
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
