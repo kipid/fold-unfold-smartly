@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 
 export function activate(context: vscode.ExtensionContext) {
   const decorationType = vscode.window.createTextEditorDecorationType({
-    after: {
+    before: {
       contentText: "⇑",
       margin: "0 0 0 .6em",
     },
@@ -57,6 +57,25 @@ export function activate(context: vscode.ExtensionContext) {
           `Folding lines from ${line + 1} to ${lastLine + 1}`
         );
         // 여기에 fold 처리 로직 추가
+      }
+
+      // 위쪽으로 fold 처리
+      let firstLine = line;
+      while (firstLine - 1 >= 0) {
+        const prevLineText = editor.document.lineAt(firstLine - 1).text;
+        if (prevLineText.startsWith(currentIndentation)) {
+          firstLine--;
+        } else {
+          break;
+        }
+      }
+
+      // 위쪽 fold 처리 메시지
+      if (firstLine < line) {
+        vscode.window.showInformationMessage(
+          `Folding lines from ${firstLine + 1} to ${line + 1}`
+        );
+        // 여기에 위쪽 fold 처리 로직 추가
       }
     });
   });
