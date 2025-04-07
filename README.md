@@ -1,16 +1,7 @@
-# fold-unfold-smartly README
+# Upward fold additionally (Smart fold/unfold)
 
-## Working with Markdown
+* From the last indent to initially same indent, folding upward is possible.
 
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
+* At the line with `∧` mark, mouse right-click and you can find `Smart Fold Upward`. Click it at the bottom indent line. Or short key `Ctrl+Alt+F` is also possible.
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+[![Smart Fold Upward (Upward fold additionally (Smart fold/unfold))](https://img.youtube.com/vi/U4TdRmKJURc/0.jpg)](https://www.youtube.com/watch?v=U4TdRmKJURc)
