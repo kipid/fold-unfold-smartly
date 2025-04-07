@@ -85,7 +85,7 @@ function activate(context) {
         before: {
             contentIconPath: iconPath,
             width: "1em",
-            height: "1em",
+            height: ".7em",
             margin: "0 -1em 0 0",
         },
     });
