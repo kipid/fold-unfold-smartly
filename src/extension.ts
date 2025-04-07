@@ -66,7 +66,7 @@ export function activate(context: vscode.ExtensionContext) {
       contentIconPath: iconPath,
       width: "1em",
       height: "1em",
-      margin: "0 0 0 -1em",
+      margin: "0 0 0 0",
     },
   });
 
