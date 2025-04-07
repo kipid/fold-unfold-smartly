@@ -126,7 +126,7 @@ export function activate(context: vscode.ExtensionContext) {
         });
 
         const newStartPosition = new vscode.Position(
-          startLine + range.start - range.end + 5,
+          startLine + range.start - range.end + 1,
           0
         );
         editor.revealRange(

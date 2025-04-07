@@ -86,7 +86,7 @@ function activate(context) {
             contentIconPath: iconPath,
             width: "1em",
             height: "1em",
-            margin: "0 -1.2em 0 1.2em",
+            margin: "0 -1em 0 0",
         },
     });
     function updateDecorations(editor) {
@@ -128,7 +128,7 @@ function activate(context) {
             vscode.commands.executeCommand("editor.fold", {
                 selectionLines: [range.start + 1],
             });
-            const newStartPosition = new vscode.Position(startLine - range.start + range.end + 1, 0);
+            const newStartPosition = new vscode.Position(startLine + range.start - range.end + 1, 0);
             editor.revealRange(new vscode.Range(newStartPosition, newStartPosition), vscode.TextEditorRevealType.AtTop);
         }
     }));
