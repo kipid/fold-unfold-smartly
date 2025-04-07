@@ -2,11 +2,11 @@
   "name": "fold-unfold-smartly",
   "displayName": "Upward fold additionally (Smart fold/unfold)",
   "description": "Fold and Unfold a specific indentation more smartly. From the downside of the indentation, fold and unfold.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "publisher": "kipacti",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kipid/fold-unfold-smartly"
+    "url": "https://github.com/kipid/fold-unfold-smartly.git"
   },
   "engines": {
     "vscode": "^1.92.0"
