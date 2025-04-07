@@ -66,7 +66,7 @@ export function activate(context: vscode.ExtensionContext) {
       contentIconPath: iconPath,
       width: "1em",
       height: "1em",
-      margin: "0 0 0 -1.2em",
+      margin: "0 -1em 0 0",
     },
   });
 
@@ -126,7 +126,7 @@ export function activate(context: vscode.ExtensionContext) {
         });
 
         const newStartPosition = new vscode.Position(
-          startLine + range.start - range.end + 3,
+          startLine + range.start - range.end + 5,
           0
         );
         editor.revealRange(
