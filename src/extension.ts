@@ -122,11 +122,12 @@ export function activate(context: vscode.ExtensionContext) {
         const startLine = visibleRange.start.line;
 
         vscode.commands.executeCommand("editor.fold", {
-          selectionLines: [range.start + 1],
+          selectionLines: [range.start],
         });
 
+        const newTop = startLine + range.start - range.end + 5;
         const newStartPosition = new vscode.Position(
-          startLine + range.start - range.end + 1,
+          newTop < 0 ? 0 : newTop,
           0
         );
         editor.revealRange(

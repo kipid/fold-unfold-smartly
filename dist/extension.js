@@ -126,9 +126,10 @@ function activate(context) {
             const visibleRange = editor.visibleRanges[0];
             const startLine = visibleRange.start.line;
             vscode.commands.executeCommand("editor.fold", {
-                selectionLines: [range.start + 1],
+                selectionLines: [range.start],
             });
-            const newStartPosition = new vscode.Position(startLine + range.start - range.end + 1, 0);
+            const newTop = startLine + range.start - range.end + 5;
+            const newStartPosition = new vscode.Position(newTop < 0 ? 0 : newTop, 0);
             editor.revealRange(new vscode.Range(newStartPosition, newStartPosition), vscode.TextEditorRevealType.AtTop);
         }
     }));
