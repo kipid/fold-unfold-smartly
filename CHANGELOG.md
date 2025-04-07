@@ -1,6 +1,5 @@
 # Change Log
 
-## [Unreleased]
+## [2025-04-07 First release.]
 
-- Initial release.
-- Testing stage. 0.0.9
+- Initial release. 1.0.1
